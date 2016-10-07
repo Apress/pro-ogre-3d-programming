@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                      "http://www.w3.org/TR/html40/loose.dtd">
+<HTML>
+<!-- Created on July 23 2006 by texi2html 1.66 -->
+<!--
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Many creative people <dev@texi2html.cvshome.org>
+Send bugs and suggestions to <users@texi2html.cvshome.org>
+
+-->
+<HEAD>
+<TITLE>OGRE Manual v1.2.2 ('Dagon'): The Core Objects</TITLE>
+
+<META NAME="description" CONTENT="OGRE Manual v1.2.2 ('Dagon'): The Core Objects">
+<META NAME="keywords" CONTENT="OGRE Manual v1.2.2 ('Dagon'): The Core Objects">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.66">
+<LINK TYPE="text/css" rel="stylesheet" href="../style.css"> 
+</HEAD>
+
+<BODY LANG="en" BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#0000FF" VLINK="#800080" ALINK="#FF0000">
+
+<A NAME="SEC4"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="manual_3.html#SEC3"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="index.html#SEC_Top"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="manual_5.html#SEC8"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="index.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="manual_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="manual_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<HR SIZE=1>
+<H1> 2. The Core Objects </H1>
+<!--docid::SEC4::-->
+<A NAME="SEC5"></A>
+<H2> Introduction  </H2>
+<!--docid::SEC5::-->
+<P>
+
+This tutorial gives you a quick summary of the core objects that you will use in OGRE and what they are used for.
+</P>
+<P>
+
+<A NAME="SEC6"></A>
+<H2> A Word About Namespaces </H2>
+<!--docid::SEC6::-->
+<P>
+
+OGRE uses a C++ feature called namespaces. This lets you put classes, enums, structures, anything really within a 'namespace' scope which is an easy way to prevent name clashes, i.e. situations where you have 2 things called the same thing. Since OGRE is designed to be used inside other applications, I wanted to be sure that name clashes would not be a problem. Some people prefix their classes/types with a short code because some compilers don't support namespaces, but I chose to use them because they are the 'right' way to do it. Sorry if you have a non-compliant compiler, but hey, the C++ standard has been defined for years, so compiler writers really have no excuse anymore. If your compiler doesn't support namespaces then it's probably because it's sh*t - get a better one. ;)
+</P>
+<P>
+
+This means every class, type etc should be prefixed with 'Ogre::', e.g. 'Ogre::Camera', 'Ogre::Vector3' etc which means if elsewhere in your application you have used a Vector3 type you won't get name clashes. To avoid lots of extra typing you can add a 'using namespace Ogre;' statement to your code which means you don't have to type the 'Ogre::' prefix unless there is ambiguity (in the situation where you have another definition with the same name).
+</P>
+<P>
+
+<A NAME="SEC7"></A>
+<H2> UML Diagram </H2>
+<!--docid::SEC7::-->
+<P>
+
+Shown below is a UML diagram of the core objects and how they relate to each other. Even if you don't know UML I'm sure you can work out the gist...
+</P>
+<P>
+
+<CENTER><IMG SRC="./images/uml-overview.png" ALT="images/uml-overview"></CENTER>
+</P>
+<P>
+
+More details on these objects can be found in the following sections.
+</P>
+<P>
+
+<A NAME="The Root Object"></A>
+<HR SIZE=1>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="manual_3.html#SEC3"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="index.html#SEC_Top"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="manual_5.html#SEC8"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="index.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="manual_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[Index]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="manual_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<BR>
+<FONT SIZE="-1">
+This document was generated
+by <I>steve</I> on <I>July 23 2006</I>
+using <A HREF="http://texi2html.cvshome.org"><I>texi2html</I></A>
+</FONT>
+
+</BODY>
+</HTML>

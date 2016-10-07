@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="3" />
+	<Project>
+		<Option title="Plugin_CgProgramManager" />
+		<Option pch_mode="0" />
+		<Option default_target="-1" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="..\bin\Debug\Plugin_CgProgramManager.dll" />
+				<Option object_output="..\obj\Debug" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option includeInTargetAll="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-W" />
+					<Add option="-g" />
+					<Add option="-DWIN32" />
+					<Add option="-D_DEBUG" />
+					<Add option="-D_WINDOWS" />
+					<Add option="-D_USRDLL" />
+					<Add option="-DPLUGIN_BSPSCENEMANAGER_EXPORTS" />
+					<Add directory="..\include" />
+					<Add directory="..\..\..\OgreMain\include" />
+					<Add directory="..\..\..\Dependencies\include" />
+				</Compiler>
+				<Linker>
+					<Add library="OgreMain_d" />
+					<Add library="cg" />
+					<Add directory="..\..\..\OgreMain\lib\Debug" />
+					<Add directory="..\..\..\Dependencies\lib\Debug" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="cp ..\bin\Debug\Plugin_CgProgramManager.dll ..\..\..\Samples\Common\bin\Debug" />
+				</ExtraCommands>
+			</Target>
+			<Target title="Release">
+				<Option output="..\bin\Release\Plugin_CgProgramManager.dll" />
+				<Option object_output="..\obj\Release" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option includeInTargetAll="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-O3" />
+					<Add option="-W" />
+					<Add option="-DWIN32" />
+					<Add option="-DNDEBUG" />
+					<Add option="-D_WINDOWS" />
+					<Add option="-D_USRDLL" />
+					<Add option="-DPLUGIN_BSPSCENEMANAGER_EXPORTS" />
+					<Add directory="..\include" />
+					<Add directory="..\..\..\OgreMain\include" />
+					<Add directory="..\..\..\Dependencies\include" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="OgreMain" />
+					<Add library="cg" />
+					<Add directory="..\..\..\OgreMain\lib\Release" />
+					<Add directory="..\..\..\Dependencies\lib\Release" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="cp ..\bin\Release\Plugin_CgProgramManager.dll ..\..\..\Samples\Common\bin\Release" />
+				</ExtraCommands>
+			</Target>
+		</Build>
+		<Linker>
+			<Add option="-Wl,--enable-runtime-pseudo-reloc" />
+		</Linker>
+		<Unit filename="..\..\..\Dependencies\include\Cg\cg.h">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\include\OgreCgPrerequisites.h">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\include\OgreCgProgram.h">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\include\OgreCgProgramFactory.h">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\src\OgreCgProgram.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\src\OgreCgProgramFactory.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\src\OgreCgProgramManagerDll.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

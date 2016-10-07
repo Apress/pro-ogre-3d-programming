@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="3" />
+	<Project>
+		<Option title="ReferenceAppLayer" />
+		<Option pch_mode="0" />
+		<Option default_target="-1" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="..\lib\Debug\ReferenceAppLayer.dll" />
+				<Option object_output="..\obj\Debug" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option includeInTargetAll="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-W" />
+					<Add option="-g" />
+					<Add option="-DWIN32" />
+					<Add option="-D_DEBUG" />
+					<Add option="-D_WINDOWS" />
+					<Add option="-D_USRDLL" />
+					<Add option="-DREFERENCEAPPLAYER_EXPORTS" />
+					<Add directory="..\include" />
+					<Add directory="..\..\..\OgreMain\include" />
+					<Add directory="..\..\..\Dependencies\include" />
+				</Compiler>
+				<Linker>
+					<Add library="OgreMain_d" />
+					<Add library="ode" />
+					<Add directory="..\..\..\OgreMain\lib\Debug" />
+					<Add directory="..\..\..\Dependencies\lib\Debug" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="cp ..\lib\Debug\ReferenceAppLayer.dll ..\..\..\Samples\Common\bin\Debug" />
+				</ExtraCommands>
+			</Target>
+			<Target title="Release">
+				<Option output="..\lib\Release\ReferenceAppLayer.dll" />
+				<Option object_output="..\obj\Release" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option includeInTargetAll="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-O3" />
+					<Add option="-W" />
+					<Add option="-DWIN32" />
+					<Add option="-DNDEBUG" />
+					<Add option="-D_WINDOWS" />
+					<Add option="-D_USRDLL" />
+					<Add option="-DREFERENCEAPPLAYER_EXPORTS" />
+					<Add directory="..\include" />
+					<Add directory="..\..\..\OgreMain\include" />
+					<Add directory="..\..\..\Dependencies\include" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="OgreMain" />
+					<Add library="ode" />
+					<Add directory="..\..\..\OgreMain\lib\Release" />
+					<Add directory="..\..\..\Dependencies\lib\Release" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="cp ..\lib\Release\ReferenceAppLayer.dll ..\..\..\Samples\Common\bin\Release" />
+				</ExtraCommands>
+			</Target>
+		</Build>
+		<Linker>
+			<Add option="-Wl,--enable-runtime-pseudo-reloc" />
+		</Linker>
+		<Unit filename="..\include\OgreRefAppApplicationObject.h">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\include\OgreRefAppBall.h">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\include\OgreRefAppBox.h">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\include\OgreRefAppCollideCamera.h">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\include\OgreRefAppJoint.h">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\include\OgreRefAppJointSubtypes.h">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\include\OgreRefAppOgreHead.h">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\include\OgreRefAppPlane.h">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\include\OgreRefAppPrerequisites.h">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\include\OgreRefAppWorld.h">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\include\OgreReferenceAppLayer.h">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\src\OgreRefAppApplicationObject.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\src\OgreRefAppBall.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\src\OgreRefAppBox.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\src\OgreRefAppCollideCamera.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\src\OgreRefAppJoint.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\src\OgreRefAppJointSubtypes.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\src\OgreRefAppOgreHead.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\src\OgreRefAppPlane.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\src\OgreRefAppWorld.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

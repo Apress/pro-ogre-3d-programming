@@ -1,0 +1,1387 @@
+// ===== Initialization
+namespace -add "ogreExporter";
+namespace -set "ogreExporter";
+
+// ===== Load Plug-in
+loadPlugin "ogreExporter";
+
+// ===== Create Ogre menu
+setParent "MayaWindow";
+menu -label "Ogre" -tearOff false;
+	menuItem -label "Export" -command "ogreExporter";
+
+// ===== Launch exporter UI
+global proc ogreExporter()
+{
+	defineUIView();
+	string $valStrings[];
+	$valStrings = `fileInfo -q "ogreExporter_savedSettings"`;
+	if (`gmatch $valStrings[0] "1"`)
+		loadSettings();
+	else
+		defaultSettings();
+}
+
+// ===== Export
+global proc runOgreExport()
+{
+	global int $numClips;
+	saveSettings();
+	// ===== Files and directories
+	string $sceneFile    = `file -query -sceneName`;
+	string $mayaFile     = basename($sceneFile, "");
+	string $sceneDir     = dirname($sceneFile);
+	string $baseFile     = basename($sceneFile, ".mb");
+	string $outputDir    = (`textField -query -text OutputDirectory`);
+	if (!endsWith($outputDir,"\\") && !endsWith($outputDir,"/") && (size($outputDir)>0))
+		$outputDir += "/";
+	string $meshFile     = (`textField -query -text ExportMeshFilename`);
+	string $materialFile = (`textField -query -text ExportMaterialFilename`);
+	string $skeletonFile = (`textField -query -text ExportSkeletonFilename`);
+	string $animFile     = (`textField -query -text ExportAnimCurvesFilename`);
+	string $camerasFile  = (`textField -query -text ExportCamerasFilename`);
+	string $particlesFile= (`textField -query -text ExportParticlesFilename`);
+
+	// ===== Options
+	string $options = "";
+	string $selectedExportTypeButton = `radioCollection -query -select ExportTypeCollection`;
+	if ($selectedExportTypeButton == "RadioButtonSelected")
+	{
+		$options += " -sel";
+	}
+	else
+	{
+		$options += " -all";
+	}
+	string $selectedCoordsTypeButton = `radioCollection -query -select CoordsTypeCollection`;
+	if ($selectedCoordsTypeButton == "RadioButtonWorld")
+	{
+		$options += " -world";
+	}
+	else
+	{
+		$options += " -obj";
+	}
+
+	
+	// --- Mesh export
+	int $exportMesh = `checkBox -query -value ExportMesh`;
+	if ($exportMesh)
+	{
+		$options += " -mesh";
+		$options += " \"" + encodeString(toNativePath($outputDir+$meshFile)) + "\"";
+
+		if (`checkBox -query -value UseSharedGeometry`)
+		{
+			$options += " -shared";
+		}
+
+            if (`checkBox -query -value ExportVBA`)
+		{
+			$options += " -v";
+		}
+
+		if (`checkBox -query -value ExportMeshNormals`)
+		{
+			$options += " -n";
+		}
+
+		if (`checkBox -query -value ExportMeshColoursWhite`)
+		{
+			$options += " -cw";
+		}
+		else if (`checkBox -query -value ExportMeshColours`)
+		{
+			$options += " -c";
+		}
+
+		if (`checkBox -query -value ExportMeshUVs`)
+		{
+			$options += " -t";
+		} 
+	}
+	
+	// --- Material export
+	int $exportMaterial = `checkBox -query -value ExportMaterial`;
+	if ($exportMaterial)
+	{
+		$options += " -mat \"" + encodeString(toNativePath($outputDir+$materialFile)) + "\"";
+		string $matPrefix = `textField -query -text ExportMaterialPrefix`;
+		if ($matPrefix != "")
+		{
+			$options += " -matPrefix \"" + $matPrefix + "\"";
+		}
+		if (`checkBox -query -value CopyTextures`)
+		{
+			$options += " -copyTex \"" + encodeString(toNativePath($outputDir)) + "\"";
+		}
+		if (`checkBox -query -value MatLightingOff`)
+		{
+			$options += " -lightOff";
+		}
+	}
+
+	// --- Skeleton export
+	int $exportSkeleton = `checkBox -query -value ExportSkeleton`;
+	if ($exportSkeleton)
+	{
+		$options += " -skel \"" + encodeString(toNativePath($outputDir+$skeletonFile)) + "\"";
+	}	
+
+	// --- Animations export
+	int $exportAnims = `checkBox -query -value ExportAnims`;
+	if ($exportAnims)
+	{
+		$options += " -anims";
+	}
+	// neutral pose
+	int $neutralPose = `radioButtonGrp -q -select NeutralPoseRadio`;
+	if ($neutralPose == 1)
+	{
+		$options += " -np curFrame";
+	}
+	else if ($neutralPose == 2)
+	{
+		$options += " -np bindPose";
+	}
+	else if ($neutralPose == 3)
+	{
+		int $nposeFrame = `intField -q -v NeutralPoseFrame`;
+		$options += " -np frame " + $nposeFrame;
+	}
+	// clips
+	int $i;
+	for ($i=1; $i<=$numClips; $i++)
+	{
+		string $command = "checkBox -q -v ExportClip" + $i;
+		if(eval($command))
+		{
+			$options += " -clip ";
+			// clip name
+			$options += eval("textField -q -tx ClipName"+$i);
+			// clip range
+			int $clipRangeType = eval("radioButtonGrp -q -sl ClipRangeRadio"+$i);
+			if ($clipRangeType == 1)
+			{
+				$options += " startEnd ";
+				$options += eval("floatField -q -v ClipRangeStart"+$i);
+				$options += " " + eval("floatField -q -v ClipRangeEnd"+$i);
+				int $rangeUnits = eval("radioButtonGrp -q -sl ClipRangeUnits"+$i);
+				if ($rangeUnits == 1)
+					$options += " frames";
+				else
+					$options += " seconds";
+			}
+			else
+				$options += " timeSlider";
+			// sample rate
+			int $clipRateType = eval("radioButtonGrp -q -sl ClipRateType"+$i);
+			if ($clipRateType == 1)
+			{
+				$options += " sampleByFrames ";
+				$options += eval("intField -q -v ClipRateFrames"+$i);
+			}
+			else
+			{
+				$options += " sampleBySec ";
+				$options += eval("floatField -q -v ClipRateSeconds"+$i);
+			}
+		}
+	}
+
+	// --- Anim Curves export
+	int $exportAnimCurves = `checkBox -query -value ExportAnimCurves`;
+	if ($exportAnimCurves)
+	{
+		$options += " -animCur \"" + encodeString(toNativePath($outputDir+$animFile)) + "\"";
+	}
+
+	// --- Cameras export
+	int $exportCameras = `checkBox -query -value ExportCameras`;
+	if ($exportCameras)
+	{
+		$options += " -cam \"" + encodeString(toNativePath($outputDir+$camerasFile)) + "\"";
+		if (`checkBox -query -value ExportCamerasAnim`)
+		{
+			$options += " -camAnim";
+		}
+	}
+
+	// --- Particles export
+	int $exportParticles = `checkBox -query -value ExportParticles`;
+	if ($exportParticles)
+	{
+		$options += " -particles \"" + encodeString(toNativePath($outputDir+$particlesFile)) + "\"";
+	}
+		
+	// ===== Export
+	print ("ogreExport" + $options + ";\n");
+	eval ("ogreExport" + $options);
+
+	// ===== Create binary files
+	string $commands;
+	$commands += "set path=" + toNativePath(`internalVar -userScriptDir`) + ";%path%" + "\n";
+	if (`checkBox -query -value ExportMeshBin`)
+	{
+		string $meshBinFile = $meshFile;
+		if (endsWith($meshBinFile,".xml"))
+		{
+			int $size = size($meshBinFile);
+			$size -= 4;
+			$meshBinFile = `substring $meshBinFile 1 $size`;
+		}
+		$commands += "OgreXMLConverter ";
+		if (!`checkBox -query -value BuildEdges`)
+			$commands += "-e ";
+		if (`checkBox -query -value BuildTangents`)
+			$commands += "-t ";
+		$commands += "\"" + toNativePath($outputDir+$meshFile) + "\" \"" + toNativePath($outputDir+$meshBinFile) + "\"\n";
+	}
+	if (`checkBox -query -value ExportSkeletonBin`) 
+	{
+		string $skelBinFile = $skeletonFile;
+		if (endsWith($skelBinFile,".xml"))
+		{
+			int $size = size($skelBinFile);
+			$size -= 4;
+			$skelBinFile = `substring $skelBinFile 1 $size`;
+		}
+		$commands += "OgreXMLConverter \"" + toNativePath($outputDir+$skeletonFile) + "\" \"" + toNativePath($outputDir+$skelBinFile) + "\"\n";
+	}
+	$commands += "pause" + "\n";
+	
+	string $commandFile = `internalVar -userScriptDir` + "maya2ogre_mel.bat";
+	$fileID = `fopen $commandFile "w"`;
+	fprint $fileID $commands;
+	fclose $fileID;
+
+	system("start \"" + `toNativePath $commandFile` + "\"");
+}
+
+// ===== Format UI
+// (Primarily enabling/disabling controls)
+global proc formatUI()
+{
+	global int $numClips;
+	// --- Common parameters
+
+	// --- Mesh Export
+	int $exportMesh = `checkBox -q -v ExportMesh`;
+	checkBox -edit -enable $exportMesh UseSharedGeometry;
+      checkBox -edit -enable $exportMesh ExportVBA;
+	checkBox -edit -enable $exportMesh ExportMeshNormals;
+	checkBox -edit -enable $exportMesh ExportMeshColours;
+	int $exportColours = `checkBox -query -value ExportMeshColours`;
+	checkBox -edit -enable ($exportMesh && $exportColours) ExportMeshColoursWhite;
+	if (!$exportColours)
+	{
+		checkBox -edit -value false ExportMeshColoursWhite;
+	}
+	checkBox -edit -enable $exportMesh ExportMeshUVs;
+	text -edit -enable $exportMesh ExportMeshFilenameLabel;
+	textField -edit -enable $exportMesh ExportMeshFilename;
+	if (!$exportMesh)
+		checkBox -edit -value false ExportMeshBin;
+	checkBox -edit -enable $exportMesh ExportMeshBin;
+	int $exportMeshBin = `checkBox -query -value ExportMeshBin`;
+	if (!$exportMeshBin)
+	{
+		checkBox -edit -value false BuildEdges;
+		checkBox -edit -value false BuildTangents;
+	}
+	checkBox -edit -enable $exportMeshBin BuildEdges;
+	checkBox -edit -enable $exportMeshBin BuildTangents;
+	
+	// --- Material Export
+	int $exportMaterial = `checkBox -query -value ExportMaterial`;
+	text -edit -enable $exportMaterial ExportMaterialFilenameLabel;
+	textField -edit -enable $exportMaterial ExportMaterialFilename;
+	text -edit -enable $exportMaterial ExportMaterialPrefixLabel;
+	textField -edit -enable $exportMaterial ExportMaterialPrefix;
+	if (!$exportMaterial)
+		checkBox -edit -value false CopyTextures;
+	checkBox -edit -enable $exportMaterial CopyTextures;
+	if (!$exportMaterial)
+		checkBox -edit -value false MatLightingOff;
+	checkBox -edit -enable $exportMaterial MatLightingOff;
+
+	// --- Skeleton Export
+	int $exportSkeleton = `checkBox -query -value ExportSkeleton`;
+	text -edit -enable $exportSkeleton ExportSkeletonFilenameLabel;
+	textField -edit -enable $exportSkeleton ExportSkeletonFilename;
+	if (!$exportSkeleton)
+		checkBox -edit -value false ExportSkeletonBin;
+	checkBox -edit -enable $exportSkeleton ExportSkeletonBin;
+
+	// --- Animations Export
+	if (!$exportSkeleton)
+		checkBox -edit -value false ExportAnims;
+	checkBox -edit -enable $exportSkeleton ExportAnims;
+	int $exportAnims = `checkBox -query -value ExportAnims`;
+	text -edit -enable $exportAnims NeutralPoseLabel;
+	radioButtonGrp -edit -enable $exportAnims NeutralPoseRadio;
+	int $neutralPoseType = `radioButtonGrp -query -select NeutralPoseRadio`;
+	intField -edit -enable (($neutralPoseType == 3)&&($exportAnims)) NeutralPoseFrame;
+	int $i;
+	for ($i=1; $i<=$numClips; $i++)
+	{
+		if (!$exportAnims)
+			checkBox -edit -value false ("ExportClip"+$i);
+		checkBox -edit -enable $exportAnims ("ExportClip"+$i);
+		
+		int $exportClip = `checkBox -query -value ("ExportClip"+$i)`;
+		textField -edit -enable $exportClip ("ClipName"+$i);
+		text -edit -enable $exportClip ("ClipRangeLabel"+$i);
+		radioButtonGrp -edit -enable $exportClip ("ClipRangeRadio"+$i);
+		text -edit -enable $exportClip ("ClipRateTypeLabel"+$i);
+		radioButtonGrp -edit -enable $exportClip ("ClipRateType"+$i);
+
+		int $rangeType = `radioButtonGrp -query -select ("ClipRangeRadio"+$i)`;
+		text -edit -enable (($rangeType == 1)&&($exportClip)) ("ClipRangeStartLabel"+$i);
+		floatField -edit -enable (($rangeType == 1)&&($exportClip)) ("ClipRangeStart"+$i);
+		text -edit -enable (($rangeType == 1)&&($exportClip)) ("ClipRangeEndLabel"+$i);
+		floatField -edit -enable (($rangeType == 1)&&($exportClip)) ("ClipRangeEnd"+$i);
+		radioButtonGrp -edit -enable (($rangeType == 1)&&($exportClip)) ("ClipRangeUnits"+$i);
+
+		int $rateType = `radioButtonGrp -query -select ("ClipRateType"+$i)`;
+		intField -edit -enable (($rateType == 1)&&($exportClip)) ("ClipRateFrames"+$i);
+		floatField -edit -enable (($rateType == 2)&&($exportClip)) ("ClipRateSeconds"+$i);
+	} 
+		
+	// --- Anim Curves Export
+	int $exportAnimCurves = `checkBox -query -value ExportAnimCurves`;
+	text -edit -enable $exportAnimCurves ExportAnimCurvesFilenameLabel;
+	textField -edit -enable $exportAnimCurves ExportAnimCurvesFilename;
+
+	// --- Camera Export
+	int $exportCameras = `checkBox -query -value ExportCameras`;
+	checkBox -edit -enable ($exportCameras && $exportAnimCurves) ExportCamerasAnim;
+	if (!$exportAnimCurves)
+	{
+		checkBox -edit -value false ExportCamerasAnim;
+	}
+	text -edit -enable $exportCameras ExportCamerasFilenameLabel;
+	textField -edit -enable $exportCameras ExportCamerasFilename;
+
+	// --- particles Export
+	int $exportParticles = `checkBox -query -value ExportParticles`;
+	text -edit -enable $exportParticles ExportParticlesFilenameLabel;
+	textField -edit -enable $exportParticles ExportParticlesFilename;
+}
+
+// ===== Initialization code
+// Initializes parameters that are not stored in fileInfo
+// Also provides defaults for params that may not yet be stored in fileInfo
+global proc initUI()
+{
+	// --- Common parameters
+	string $sceneFile = `file -query -sceneName`;
+	string $sceneDir = dirname($sceneFile);
+	string $baseFile = basename($sceneFile, ".mb");
+	textField -edit -fileName $sceneDir SceneDirectory;
+	
+	// --- Mesh Export
+	string $meshFile = $baseFile + ".mesh.xml";
+	textField -edit -fileName $meshFile ExportMeshFilename;
+	
+	// --- Material Export
+	string $matFile = $baseFile + ".material";
+	textField -edit -fileName $matFile ExportMaterialFilename;
+
+	// --- Skeleton Export
+	string $skelFile = $baseFile + ".skeleton.xml";
+	textField -edit -fileName $skelFile ExportSkeletonFilename;
+
+	// --- Camera Export
+	string $camFile = $baseFile + ".camera";
+	textField -edit -fileName $camFile ExportCamerasFilename;
+
+	// --- Anim Curves Export
+	string $animFile = $baseFile + ".anim";
+	textField -edit -fileName $animFile ExportAnimCurvesFilename;
+
+	// --- Particles Export
+	string $particlesFile = $baseFile + ".particles.xml";
+	textField -edit -fileName $particlesFile ExportParticlesFilename;
+}
+
+// ===== Define UI
+global proc defineUIView()
+{
+	global int $numClips;
+	$numClips = 0;
+
+	// --- Main window for Ogre exporter
+	if (`window -exists OgreExportWindow`)
+	{
+	deleteUI OgreExportWindow;
+	}
+	window 
+	-title "Ogre Exporter" 
+		OgreExportWindow;
+	scrollLayout 
+	OgreExportScrollLayout;
+	columnLayout
+	OgreExportLayout;
+
+		// --- Common Parameters Frame
+		frameLayout
+			-parent OgreExportLayout 
+			-label "Common Parameters" 
+			-collapsable true
+		CommonFrame;
+
+			columnLayout
+				-parent CommonFrame 
+				-columnAttach "left" 20
+			CommonLayout;
+
+				text  
+					-parent CommonLayout   
+					-label "Current Directory"
+				SceneDirectoryLabel;
+				
+				textField
+					-parent CommonLayout 
+					-width 305
+					-editable false
+				SceneDirectory;
+
+				text  
+					-parent CommonLayout   
+					-label "Output Directory"
+				OutputDirectoryLabel;
+				
+				textField
+					-parent CommonLayout 
+					-width 305
+				OutputDirectory;
+
+				rowColumnLayout
+					-parent CommonLayout
+					-numberOfColumns 3
+				ExportTypeLayout;
+
+					text -label "Export:";
+					string $radioButton1, $radioButton2;
+					radioCollection ExportTypeCollection;
+					radioButton -label "all" -select RadioButtonAll;
+					radioButton -label "selected" RadioButtonSelected;
+
+				rowColumnLayout
+					-parent CommonLayout
+					-numberOfColumns 3
+				CoordsType;
+
+					text -label "Coordinate space:";
+				//	string $radioButtonWorld, $radioButtonObject;
+					radioCollection CoordsTypeCollection;
+					radioButton -label "world" -select RadioButtonWorld;
+					radioButton -label "object" RadioButtonObject;
+
+
+		// --- Mesh
+		frameLayout
+			-parent OgreExportLayout 
+			-collapsable true
+			-label "Mesh" 
+		MeshFrame;
+
+			columnLayout
+				-parent MeshFrame 
+				-columnAttach "left" 20
+			MeshLayout;
+				
+				checkBox
+					-parent MeshLayout
+					-value false 
+					-changeCommand "formatUI"
+					-label "Export mesh to Ogre XML format"
+				ExportMesh;
+
+				checkBox
+					-parent MeshLayout
+					-value false
+					-changeCommand "formatUI"
+					-label "Use shared geometry"
+				UseSharedGeometry;
+
+                        checkBox
+					-parent MeshLayout
+					-value true  
+					-enable false
+					-label "Include vertex bone assignements"
+				ExportVBA;
+
+				checkBox
+					-parent MeshLayout
+					-value true  
+					-enable false
+					-label "Include vertex normals"
+				ExportMeshNormals;
+				
+				checkBox
+					-parent MeshLayout
+					-value false  
+					-changeCommand "formatUI"
+					-enable false
+					-label "Include diffuse vertex colours"
+				ExportMeshColours;
+				
+				checkBox
+					-parent MeshLayout
+					-value false  
+					-enable false
+					-label "Export diffuse vertex colours as white"
+				ExportMeshColoursWhite;
+				
+				checkBox
+					-parent MeshLayout
+					-value true  
+					-enable false
+					-label "Include texture coordinates"
+				ExportMeshUVs;
+				
+				text     
+					-parent MeshLayout
+					-label "XML Mesh Filename"
+					-enable false
+				ExportMeshFilenameLabel;
+				
+				textField
+					-parent MeshLayout 
+					-width 305
+					-enable false
+				ExportMeshFilename;
+
+				checkBox
+					-parent MeshLayout
+					-value false
+					-enable false
+					-label "Create mesh binary file"
+					-changeCommand "formatUI"
+				ExportMeshBin;
+
+				checkBox
+					-parent MeshLayout
+					-value false
+					-enable false
+					-label "Build edges list (for shadows)"
+				BuildEdges;
+
+				checkBox
+					-parent MeshLayout
+					-value false
+					-enable false
+					-label "Build tangent vectors (for normal maps)"
+				BuildTangents;
+
+		// --- Materials
+		frameLayout 
+			-parent OgreExportLayout
+			-collapsable true
+			-label "Materials" 
+		MaterialFrame;
+
+			columnLayout
+				-parent MaterialFrame 
+				-columnAttach "left" 20
+			MaterialLayout;
+
+				checkBox
+					-parent MaterialLayout
+					-value false 
+					-changeCommand "formatUI"
+					-label "Export materials to Ogre .material file"
+				ExportMaterial;
+				
+				text
+					-parent MaterialLayout     
+					-label "Material Filename"
+					-enable false
+				ExportMaterialFilenameLabel;
+				
+				textField
+					-parent MaterialLayout 
+					-width 305
+					-enable false
+				ExportMaterialFilename;
+
+				text
+					-parent MaterialLayout
+					-label "Material name prefix"
+					-enable false
+				ExportMaterialPrefixLabel;
+
+				textField
+					-parent MaterialLayout
+					-width 305
+					-enable false
+					-text ""
+				ExportMaterialPrefix;
+
+				checkBox
+					-parent MaterialLayout
+					-value false
+					-label "Copy texture files to output dir"
+				CopyTextures;
+
+				checkBox
+					-parent MaterialLayout
+					-value false
+					-label "Export with \"ligthing off\" option"
+				MatLightingOff;
+
+		// --- Skeleton
+		frameLayout
+			-parent OgreExportLayout
+			-collapsable true
+			-label "Skeleton"
+		SkeletonFrame;
+
+			columnLayout
+				-parent SkeletonFrame
+				-columnAttach "left" 20
+			SkeletonLayout;
+			
+				checkBox
+					-parent SkeletonLayout
+					-value false
+					-changeCommand "formatUI"
+					-label "Export skeleton to .skeleton.xml file"
+				ExportSkeleton;
+				
+				text
+					-parent SkeletonLayout
+					-label "Skeleton Filename"
+					-enable false
+				ExportSkeletonFilenameLabel;
+				
+				textField
+					-parent SkeletonLayout
+				   	-width 305
+				   	-enable false
+				ExportSkeletonFilename;
+
+				checkBox
+					-parent SkeletonLayout
+					-value false
+					-enable false
+					-label "Create skeleton binary file"
+				ExportSkeletonBin;
+
+
+		// --- Animations
+		frameLayout
+			-parent OgreExportLayout
+			-collapsable true
+			-label "Animations"
+			-width 329
+		AnimsFrame;
+
+			columnLayout
+				-parent AnimsFrame
+				-columnAttach "left" 20
+			AnimsLayout;
+
+				checkBox
+					-parent AnimsLayout
+					-value false
+					-changeCommand "formatUI"
+					-label "Export animations (requires export of skeleton)"
+				ExportAnims;
+
+				text
+					-parent AnimsLayout
+					-label "Frame for neutral pose:"
+				NeutralPoseLabel;
+
+				radioButtonGrp
+					-parent AnimsLayout
+					-numberOfRadioButtons 3
+					-labelArray3 "Current frame" "Skin bind pose" "Frame:"
+					-cw 1 100
+					-cw 2 100
+					-cw 3 100
+					-select 1
+					-changeCommand "formatUI()"
+				NeutralPoseRadio;
+
+				columnLayout
+					-parent AnimsLayout
+					-columnAttach "left" 200
+				NeutralPoseFrameLayout;
+
+					intField
+						-parent NeutralPoseFrameLayout
+						-value 0
+						-width 50
+					NeutralPoseFrame;
+
+				columnLayout
+					-parent AnimsLayout
+					-columnAttach "left" 0
+				ClipsLayout;
+
+				rowLayout
+					-parent AnimsLayout
+					-numberOfColumns 2
+					-columnWidth 1 160
+					-columnWidth 2 60
+					-columnAttach 1 "left" 100
+				ClipsButtonsLayout;
+			
+					button
+						-parent ClipsButtonsLayout
+						-label "Add Clip"
+						-width 60
+						-command "addClip()"
+					ButtonAddClip;
+
+					button
+						-parent ClipsButtonsLayout
+						-label "Delete Clip"
+						-width 60
+						-command "delClip()"
+					ButtonDelClip;
+
+								
+		// --- Anim Curves
+		frameLayout 
+			-parent OgreExportLayout
+			-collapsable true
+			-label "Animation Curves" 
+		AnimCurvesFrame;
+
+			columnLayout 
+				-parent AnimCurvesFrame
+				-columnAttach "left" 20
+			AnimCurvesLayout;
+			
+				checkBox
+					-parent AnimCurvesLayout
+					-value false 
+					-changeCommand "formatUI"
+					-label "Export animation curves to Ogre .anim file"
+				ExportAnimCurves;
+				
+				text
+					-parent AnimCurvesLayout     
+					-label "Anim Curves Filename"
+					-enable false
+				ExportAnimCurvesFilenameLabel;
+				
+				textField
+					-parent AnimCurvesLayout 
+					-width 305
+					-enable false
+				ExportAnimCurvesFilename;
+
+		// --- Cameras
+		frameLayout 
+			-parent OgreExportLayout
+			-collapsable true
+			-label "Cameras" 
+		CameraFrame;
+
+			columnLayout 
+				-parent CameraFrame
+				-columnAttach "left" 20
+			CameraLayout;
+
+				checkBox
+					-parent CameraLayout
+					-value false 
+					-changeCommand "formatUI"
+					-label "Export cameras to Ogre .camera file"
+				ExportCameras;
+
+				checkBox
+					-parent CameraLayout
+					-value false
+					-changeCommand "formatUI"
+					-label "Export Camera Animations(requires export of anim curves)"
+				ExportCamerasAnim;
+
+				text
+					-parent CameraLayout    
+					-label "Cameras Filename"
+					-enable false
+				ExportCamerasFilenameLabel;
+				
+				textField 
+					-parent CameraLayout
+					-width 305
+					-enable false
+				ExportCamerasFilename;
+
+		// --- Particles
+		frameLayout 
+			-parent OgreExportLayout
+			-collapsable true
+			-label "Particles" 
+		ParticlesFrame;
+
+			columnLayout 
+				-parent ParticlesFrame
+				-columnAttach "left" 20
+			ParticlesLayout;
+			
+				checkBox
+					-parent ParticlesLayout
+					-value false 
+					-changeCommand "formatUI"
+					-label "Export particles to Ogre .particles file"
+				ExportParticles;
+				
+				text
+					-parent ParticlesLayout     
+					-label "Particles Filename"
+					-enable false
+				ExportParticlesFilenameLabel;
+				
+				textField
+					-parent ParticlesLayout 
+					-width 305
+					-enable false
+				ExportParticlesFilename;
+
+		// --- Export!
+		separator
+			-parent OgreExportLayout 
+			-style "none" 
+			-height 10;
+
+		button
+			-parent OgreExportLayout 
+			-label "EXPORT" 
+			-command "runOgreExport"
+			-width 325
+		ButtonExport;
+
+		// --- Manage settings
+		separator
+			-parent OgreExportLayout
+			-style "in" 
+			-width 325
+			-height 5;
+
+		rowLayout
+			-parent OgreExportLayout
+			-numberOfColumns 3
+			-columnWidth3 110 110 100
+			-columnAlign 1 "center"
+			-columnAlign 2 "center"
+			-columnAlign 3 "center"
+		SettingsButtonsLayout;
+
+			button
+				-parent SettingsButtonsLayout
+				-label "Load settings"
+				-command "loadSettings"
+				-width 100
+			LoadSettingsButton;
+
+			button
+				-parent SettingsButtonsLayout
+				-label "Save settings"
+				-command "saveSettings"
+				-width 100
+			SaveSettingsButton;
+
+			button
+				-parent SettingsButtonsLayout
+				-label "Default settings"
+				-command "defaultSettings"
+				-width 100
+			DefaultSettingsButton;
+
+
+
+	// --- Add an empty clip
+	addClip();
+	// --- Show the Window
+	showWindow OgreExportWindow;
+}
+
+global proc addClip()
+{
+	global int $numClips;
+	$numClips++;
+
+	frameLayout
+		-parent ClipsLayout
+		-width 309
+		-label ("Clip"+$numClips)
+	("ClipFrame"+$numClips);
+
+		columnLayout
+			-parent ("ClipFrame"+$numClips)
+			-columnAttach "left" 0
+		("ClipLayout"+$numClips);
+
+		rowLayout
+			-parent ("ClipLayout"+$numClips)
+			-numberOfColumns 2
+			-columnWidth2 100 200
+			-columnOffset2 5 5
+			-columnAlign 1 "left"
+			-columnAlign 2 "left"
+		("ClipNameLayout"+$numClips);
+							
+			checkBox
+				-parent ("ClipNameLayout"+$numClips)
+				-value false
+				-changeCommand "formatUI"
+				-label "Clip Name"
+			("ExportClip"+$numClips);
+					
+			textField
+				-parent ("ClipNameLayout"+$numClips)
+				-width 200
+				-text ("clip"+$numClips)
+			("ClipName"+$numClips);
+
+			separator
+				-parent ("ClipLayout"+$numClips) 
+				-style "in" 
+				-width 309
+				-height 5;
+
+			rowLayout
+				-parent ("ClipLayout"+$numClips)
+				-numberOfColumns 2
+				-columnWidth2 100 200
+				-columnAlign 1 "left"
+				-columnAlign 2 "left"
+			("ClipRangeTypeLayout"+$numClips);
+				
+				text
+					-parent ("ClipRangeTypeLayout"+$numClips)
+					-label "Time Range:"
+				("ClipRangeLabel"+$numClips);
+			
+				radioButtonGrp
+					-parent ("ClipRangeTypeLayout"+$numClips)
+					-numberOfRadioButtons 2
+					-labelArray2 "Start/End" "Time Slider"
+					-cw 1 100
+					-cw 2 100
+					-select 2
+					-changeCommand "formatUI()"
+				("ClipRangeRadio"+$numClips);
+
+			columnLayout
+				-parent ("ClipLayout"+$numClips)
+				-columnAttach "left" 70
+			("ClipRangeLayout"+$numClips);
+
+				rowLayout
+					-parent ("ClipRangeLayout"+$numClips)
+					-numberOfColumns 2
+					-columnAlign 1 "left"
+					-columnAlign 2 "left"
+					-columnAttach 1 "both" 0
+					-columnAttach 2 "both" 0
+					-columnOffset2 5 5
+					-columnWidth 1 70
+					-columnWidth 2 50
+				("ClipRangeStartLayout"+$numClips);
+
+					text
+						-parent ("ClipRangeStartLayout"+$numClips)
+						-label "Start Time:"
+						-width 50
+					("ClipRangeStartLabel"+$numClips);
+
+					floatField
+						-parent ("ClipRangeStartLayout"+$numClips)
+						-width 50
+						-value 0.000
+					("ClipRangeStart"+$numClips);
+				
+				rowLayout
+					-parent ("ClipRangeLayout"+$numClips)
+					-numberOfColumns 2
+					-columnAlign 1 "left"
+					-columnAlign 2 "left"
+					-columnAttach 1 "both" 0
+					-columnAttach 2 "both" 0
+					-columnOffset2 5 5
+					-columnWidth 1 70
+					-columnWidth 2 50
+				("ClipRangeEndLayout"+$numClips);
+
+					text
+						-parent ("ClipRangeEndLayout"+$numClips)
+						-label "End Time:"
+					("ClipRangeEndLabel"+$numClips);
+
+					floatField
+						-parent ("ClipRangeEndLayout"+$numClips)
+						-value 0.000
+						-width 50
+					("ClipRangeEnd"+$numClips);
+
+				columnLayout
+					-parent ("ClipRangeLayout"+$numClips)
+					-columnAttach "left" 0
+				("ClipRangeUnitsLayout"+$numClips);
+
+					radioButtonGrp
+						-parent ("ClipRangeUnitsLayout"+$numClips)
+						-numberOfRadioButtons 2
+						-labelArray2 "Frames" "Seconds"
+						-cw 1 65
+						-cw 2 65 
+						-select 1
+					("ClipRangeUnits"+$numClips);
+					
+			separator
+				-parent ("ClipLayout"+$numClips) 
+				-style "in" 
+				-width 309
+				-height 5;
+
+			rowLayout
+				-parent ("ClipLayout"+$numClips)
+				-numberOfColumns 2
+				-columnWidth 1 70
+				-columnWidth 2 230
+				-columnAlign 1 "left"
+				-columnAlign 2 "left"
+				-columnAttach 1 "both" 0
+				-columnAttach 2 "both" 0
+				-columnOffset2 5 5
+			("ClipRateTypeLayout"+$numClips);
+
+				text
+					-parent ("ClipRateTypeLayout"+$numClips)
+					-label "Sample by:"
+				("ClipRateTypeLabel"+$numClips);
+	
+				radioButtonGrp
+					-parent ("ClipRateTypeLayout"+$numClips)
+					-numberOfRadioButtons 2
+					-labelArray2 "Frames" "Seconds"
+					-cw 1 65
+					-cw 2 65
+					-select 1
+					-changeCommand "formatUI()"
+				("ClipRateType"+$numClips);
+
+			rowLayout
+				-parent ("ClipLayout"+$numClips)
+				-numberOfColumns 2
+				-columnWidth 1 125
+				-columnWidth 2 80
+				-columnAlign 1 "left"
+				-columnAlign 2 "left"
+				-columnAttach 1 "left" 75
+				-columnAttach 2 "both" 15
+			("ClipRateLayout"+$numClips);
+							
+				intField
+					-parent ("ClipRateLayout"+$numClips)
+					-width 50
+					-value 1.000
+				("ClipRateFrames"+$numClips);
+			
+				floatField
+					-parent ("ClipRateLayout"+$numClips)
+					-width 50
+					-value 0.100
+				("ClipRateSeconds"+$numClips);
+	formatUI();
+}
+
+global proc delClip()
+{
+	global int $numClips;
+	if ($numClips > 1)
+	{
+		deleteUI("ClipFrame"+$numClips);
+		$numClips--;
+	}
+	formatUI();
+}
+
+global proc saveSettings()
+{
+	fileInfo "ogreExporter_savedSettings" "1";
+	// Common parameters
+	fileInfo "ogreExporter_outputDir" `textField -query -fileName OutputDirectory`;
+	fileInfo "ogreExporter_exportType" `radioCollection -q -select ExportTypeCollection`;
+	fileInfo "ogreExporter_coordsType" `radioCollection -q -select CoordsTypeCollection`;		
+
+	// Mesh
+	fileInfo "ogreExporter_exportMesh" `checkBox -q -v ExportMesh`;
+	fileInfo "ogreExporter_useSharedGeom" `checkBox -q -v UseSharedGeometry`;
+	fileInfo "ogreExporter_exportVBA" `checkBox -q -v ExportVBA`;
+	fileInfo "ogreExporter_exportNormals" `checkBox -q -v ExportMeshNormals`;
+	fileInfo "ogreExporter_exportColours" `checkBox -q -v ExportMeshColours`;
+	fileInfo "ogreExporter_exportColWhite" `checkBox -q -v ExportMeshColoursWhite`;
+	fileInfo "ogreExporter_exportUVs" `checkBox -q -v ExportMeshUVs`;
+	fileInfo "ogreExporter_meshFilename" `textField -q -text ExportMeshFilename`;
+	fileInfo "ogreExporter_exportMeshBin" `checkBox -q -v ExportMeshBin`;
+	fileInfo "ogreExporter_buildEdges" `checkBox -q -v BuildEdges`;
+	fileInfo "ogreExporter_buildTangents" `checkBox -q -v BuildTangents`;
+	
+	// Materials
+	fileInfo "ogreExporter_exportMat" `checkBox -q -v ExportMaterial`;
+	fileInfo "ogreExporter_materialFile" `textField -q -text ExportMaterialFilename`;
+	fileInfo "ogreExporter_matPrefix" `textField -q -text ExportMaterialPrefix`;
+	fileInfo "ogreExporter_copyTextures" `checkBox -q -v CopyTextures`;
+	fileInfo "ogreExporter_lightingOff" `checkBox -q -v MatLightingOff`;
+	
+	// Skeleton	
+	fileInfo "ogreExporter_exportSkel" `checkBox -q -v ExportSkeleton`;
+	fileInfo "ogreExporter_skelFilename" `textField -q -text ExportSkeletonFilename`; 
+	fileInfo "ogreExporter_exportSkelBin" `checkBox -q -v ExportSkeletonBin`;
+	
+	// Animations
+	fileInfo "ogreExporter_exportAnims" `checkBox -q -v ExportAnims`;
+	fileInfo "ogreExporter_neutralPoseType" `radioButtonGrp -q -select NeutralPoseRadio`;
+	fileInfo "ogreExporter_neutralPoseFrame" `intField -q -v NeutralPoseFrame`;
+	global int $numClips;
+	fileInfo "ogreExporter_numClips" $numClips;
+	int $i; 
+	for ($i=1; $i<=$numClips; $i++)
+	{
+		fileInfo ("ogreExporter_exportClip"+$i) `checkBox -q -v ("ExportClip"+$i)`;
+		fileInfo ("ogreExporter_clipName"+$i) `textField -q -text ("ClipName"+$i)`;
+		fileInfo ("ogreExporter_clipRangeType"+$i) `radioButtonGrp -q -select ("ClipRangeRadio"+$i)`;
+		fileInfo ("ogreExporter_clipStart"+$i) `floatField -q -v ("ClipRangeStart"+$i)`;
+		fileInfo ("ogreExporter_clipEnd"+$i) `floatField -q -v ("ClipRangeEnd"+$i)`;
+		fileInfo ("ogreExporter_clipRangeUnits"+$i) `radioButtonGrp -q -select ("ClipRangeUnits"+$i)`;
+		fileInfo ("ogreExporter_clipRateType"+$i) `radioButtonGrp -q -select ("ClipRateType"+$i)`;
+		fileInfo ("ogreExporter_clipRateFrames"+$i) `intField -q -v ("ClipRateFrames"+$i)`;
+		fileInfo ("ogreExporter_clipRangeSeconds"+$i) `floatField -q -v ("ClipRateSeconds"+$i)`;
+	}
+
+	// Anim Curves
+	fileInfo "ogreExporter_exportAnimCurves" `checkBox -q -v ExportAnimCurves`;
+	fileInfo "ogreExporter_animCurvesFilename" `textField -q -text ExportAnimCurvesFilename`;
+	
+	// Cameras
+	fileInfo "ogreExporter_exportCameras" `checkBox -q -v ExportCameras`;
+	fileInfo "ogreExporter_exportCamerasAnim" `checkBox -q -v ExportCamerasAnim`;
+	fileInfo "ogreExporter_camerasFilename" `textField -q -text ExportCamerasFilename`;
+
+	// Particles
+	fileInfo "ogreExporter_exportParticles" `checkBox -q -v ExportParticles`;
+	fileInfo "ogreExporter_particlesFilename" `textField -q -text ExportParticlesFilename`;	
+}
+
+global proc loadSettings()
+{
+	string $valStrings[];
+	int $valInt;
+	float $valFloat;
+	$valStrings = `fileInfo -q "ogreExporter_savedSettings"`;
+	if (`gmatch $valStrings[0] "1"`)
+	{
+		// Common parameters
+		textField -edit -fileName `fileInfo -q "ogreExporter_outputDir"` OutputDirectory;
+		radioCollection -edit -select `fileInfo -q "ogreExporter_exportType"` ExportTypeCollection;
+		radioCollection -edit -select `fileInfo -q "ogreExporter_coordsType"` CoordsTypeCollection;
+	
+		// Mesh
+		$valStrings = `fileInfo -q "ogreExporter_exportMesh"`;
+		checkBox -edit -v `gmatch $valStrings[0] "1"` ExportMesh;
+		$valStrings = `fileInfo -q "ogreExporter_useSharedGeom"`;
+		checkBox -edit -v `gmatch $valStrings[0] "1"` UseSharedGeometry;
+		$valStrings = `fileInfo -q "ogreExporter_exportVBA"`;
+		checkBox -edit -v `gmatch $valStrings[0] "1"` ExportVBA;
+		$valStrings = `fileInfo -q "ogreExporter_exportNormals"`;
+		checkBox -edit -v `gmatch $valStrings[0] "1"` ExportMeshNormals;
+		$valStrings = `fileInfo -q "ogreExporter_exportColours"`;
+		checkBox -edit -v `gmatch $valStrings[0] "1"` ExportMeshColours;
+		$valStrings = `fileInfo -q "ogreExporter_exportColWhite"`;
+		checkBox -edit -v `gmatch $valStrings[0] "1"` ExportMeshColoursWhite;
+		$valStrings = `fileInfo -q "ogreExporter_exportUVs"`;
+		checkBox -edit -v `gmatch $valStrings[0] "1"` ExportMeshUVs;
+		textField -edit -text `fileInfo -q "ogreExporter_meshFilename"` ExportMeshFilename;
+		$valStrings = `fileInfo -q "ogreExporter_exportMeshBin"`;
+		checkBox -edit -v `gmatch $valStrings[0] "1"` ExportMeshBin;
+		$valStrings = `fileInfo -q "ogreExporter_buildEdges"`;
+		checkBox -edit -v `gmatch $valStrings[0] "1"` BuildEdges;
+		$valStrings = `fileInfo -q "ogreExporter_buildTangents"`;
+		checkBox -edit -v `gmatch $valStrings[0] "1"` BuildTangents;
+	
+		// Materials
+		$valStrings = `fileInfo -q "ogreExporter_exportMat"`;
+		checkBox -edit -v `gmatch $valStrings[0] "1"` ExportMaterial;
+		textField -edit -text `fileInfo -q "ogreExporter_materialFile"` ExportMaterialFilename;
+		textField -edit -text `fileInfo -q "ogreExporter_matPrefix"` ExportMaterialPrefix;
+		$valStrings = `fileInfo -q "ogreExporter_copyTextures"`;
+		checkBox -edit -v `gmatch $valStrings[0] "1"` CopyTextures;
+		$valStrings = `fileInfo -q "ogreExporter_lightingOff"`;
+		checkBox -edit -v `gmatch $valStrings[0] "1"` MatLightingOff;
+	
+		// Skeleton		
+		$valStrings = `fileInfo -q "ogreExporter_exportSkel"` ;
+		checkBox -edit -v `gmatch $valStrings[0] "1"` ExportSkeleton;
+		textField -edit -text `fileInfo -q "ogreExporter_skelFilename"` ExportSkeletonFilename;
+		$valStrings = `fileInfo -q "ogreExporter_exportSkelBin"`;
+		checkBox -edit -v `gmatch $valStrings[0] "1"` ExportSkeletonBin;
+	
+		// Animations
+		$valStrings = `fileInfo -q "ogreExporter_exportAnims"`;
+		checkBox -edit -v `gmatch $valStrings[0] "1"` ExportAnims;
+		$valStrings = `fileInfo -q "ogreExporter_neutralPoseType"`;
+		$valInt = $valStrings[0];
+		radioButtonGrp -edit -select $valInt NeutralPoseRadio;
+		$valStrings = `fileInfo -q "ogreExporter_neutralPoseFrame"`;
+		$valInt = $valStrings[0];
+		intField -edit -v $valInt NeutralPoseFrame;
+		$valString = `fileInfo -q "ogreExporter_numClips"`;
+		int $n = $valString[0];
+		$valInt = $valString[0];
+		global int $numClips;
+		for (;$numClips>1;delClip());
+		int $i;
+		for ($i=1; $i<=$n; $i++)
+		{
+			if ($i > 1)
+				addClip();
+			$valStrings = `fileInfo -q ("ogreExporter_exportClip"+$i)`;
+			checkBox -edit -v `gmatch $valStrings[0] "1"` ("ExportClip"+$i);
+			textField -edit -text `fileInfo -q ("ogreExporter_clipName"+$i)` ("ClipName"+$i);
+			$valStrings = `fileInfo -q ("ogreExporter_clipRangeType"+$i)`;
+			$valInt = $valStrings[0];
+			radioButtonGrp -edit -select $valInt ("ClipRangeRadio"+$i);
+			$valStrings = `fileInfo -q ("ogreExporter_clipStart"+$i)`;
+			$valFloat = $valStrings[0];
+			floatField -edit -v $valFloat ("ClipRangeStart"+$i);
+			$valStrings = `fileInfo -q ("ogreExporter_clipEnd"+$i)`;
+			$valFloat = $valStrings[0];
+			floatField -edit -v $valFloat ("ClipRangeEnd"+$i);
+			$valStrings = `fileInfo -q ("ogreExporter_clipRangeUnits"+$i)`;
+			$valInt = $valStrings[0];
+			radioButtonGrp -edit -select $valInt ("ClipRangeUnits"+$i);
+			$valStrings = `fileInfo -q ("ogreExporter_clipRateType"+$i)`;
+			$valInt = $valStrings[0];
+			radioButtonGrp -edit -select $valInt ("ClipRateType"+$i);
+			$valStrings = `fileInfo -q ("ogreExporter_clipRateFrames"+$i)`;
+			$valInt = $valStrings[0];
+			intField -edit -v $valInt ("ClipRateFrames"+$i);
+			$valStrings = `fileInfo -q ("ogreExporter_clipRateSeconds"+$i)`;
+			$valFloat = $valStrings[0];
+			floatField -edit -v $valFloat ("ClipRateSeconds"+$i);
+		}
+	
+		// Anim Curves
+		$valStrings = `fileInfo -q "ogreExporter_exportAnimCurves"`;
+		checkBox -edit -v `gmatch $valStrings[0] "1"` ExportAnimCurves;
+		textField -edit -text `fileInfo -q "ogreExporter_animCurvesFilename"` ExportAnimCurvesFilename;
+	
+		// Cameras
+		$valStrings = `fileInfo -q "ogreExporter_exportCameras"`;
+		checkBox -edit -v `gmatch $valStrings[0] "1"` ExportCameras;
+		$valStrings = `fileInfo -q "ogreExporter_exportCamerasAnim"`;
+		checkBox -edit -v `gmatch $valStrings[0] "1"` ExportCamerasAnim;
+		textField -edit -text `fileInfo -q "ogreExporter_camerasFilename"` ExportCamerasFilename;
+	
+		// Particles
+		$valStrings = `fileInfo -q "ogreExporter_exportParticles"`;
+		checkBox -edit -v `gmatch $valStrings[0] "1"` ExportParticles;
+		textField -edit -text `fileInfo -q "ogreExporter_particlesFilename"` ExportParticlesFilename;
+
+		formatUI();
+	}
+}
+
+global proc defaultSettings()
+{
+	// Common parameters
+	textField -edit -fileName "" OutputDirectory;
+	radioCollection -edit -select "RadioButtonAll" ExportTypeCollection;
+	radioCollection -edit -select "RadioButtonWorld" CoordsTypeCollection;
+
+	// Mesh
+	checkBox -edit -v 0 ExportMesh;
+	checkBox -edit -v 1 UseSharedGeometry;
+	checkBox -edit -v 1 ExportVBA;
+	checkBox -edit -v 1 ExportMeshNormals;
+	checkBox -edit -v 0 ExportMeshColours;
+	checkBox -edit -v 0 ExportMeshColoursWhite;
+	checkBox -edit -v 1 ExportMeshUVs;
+	textField -edit -text "" ExportMeshFilename;
+	checkBox -edit -v 0 ExportMeshBin;
+	checkBox -edit -v 0 BuildEdges;
+	checkBox -edit -v 0 BuildTangents;
+
+	// Materials
+	checkBox -edit -v 0 ExportMaterial;
+	textField -edit -text "" ExportMaterialFilename;
+	textField -edit -text "" ExportMaterialPrefix;
+	checkBox -edit -v 0 CopyTextures;
+	checkBox -edit -v 0 MatLightingOff;
+
+	// Skeleton	
+	checkBox -edit -v 0 ExportSkeleton;
+	textField -edit -text "" ExportSkeletonFilename;
+	checkBox -edit -v 0 ExportSkeletonBin;
+
+	// Animations
+	checkBox -edit -v 0 ExportAnims;
+	radioButtonGrp -edit -select 1 NeutralPoseRadio;
+	intField -edit -v 0 NeutralPoseFrame;
+	global int $numClips;
+	for (;$numClips>1;delClip());
+	checkBox -edit -v 0 ExportClip1;
+	textField -edit -text "clip1" ClipName1;
+	radioButtonGrp -edit -select 1 ClipRangeRadio1;
+	floatField -edit -v 0 ClipRangeStart1;
+	floatField -edit -v 0 ClipRangeEnd1;
+	radioButtonGrp -edit -select 1 ClipRangeUnits1;
+	radioButtonGrp -edit -select 1 ClipRateType1;
+	intField -edit -v 1 ClipRateFrames1;
+	floatField -edit -v 0.1 ClipRateSeconds1;
+
+	// Anim Curves
+	checkBox -edit -v 0 ExportAnimCurves;
+	textField -edit -text "" ExportAnimCurvesFilename;
+
+	// Cameras
+	checkBox -edit -v 0 ExportCameras;
+	checkBox -edit -v 0 ExportCamerasAnim;
+	textField -edit -text `fileInfo -q "ogreExporter_camerasFilename"` ExportCamerasFilename;
+
+	// Particles
+	checkBox -edit -v 0 ExportParticles;
+	textField -edit -text "" ExportParticlesFilename;
+
+	// Initialize filenames
+	string $sceneFile = `file -query -sceneName`;
+	string $sceneDir = dirname($sceneFile);
+	string $baseFile = basename($sceneFile, ".mb");
+	textField -edit -fileName $sceneDir SceneDirectory;
+	
+	// --- Mesh Export
+	string $meshFile = $baseFile + ".mesh.xml";
+	textField -edit -fileName $meshFile ExportMeshFilename;
+	
+	// --- Material Export
+	string $matFile = $baseFile + ".material";
+	textField -edit -fileName $matFile ExportMaterialFilename;
+
+	// --- Skeleton Export
+	string $skelFile = $baseFile + ".skeleton.xml";
+	textField -edit -fileName $skelFile ExportSkeletonFilename;
+
+	// --- Camera Export
+	string $camFile = $baseFile + ".camera";
+	textField -edit -fileName $camFile ExportCamerasFilename;
+
+	// --- Anim Curves Export
+	string $animFile = $baseFile + ".anim";
+	textField -edit -fileName $animFile ExportAnimCurvesFilename;
+
+	// --- Particles Export
+	string $particlesFile = $baseFile + ".particles.xml";
+	textField -edit -fileName $particlesFile ExportParticlesFilename;
+
+	formatUI();
+}

@@ -1,0 +1,153 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_EXPORT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 486
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 266
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_EXPORT DIALOGEX 0, 0, 493, 273
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_CAPTION | WS_SYSMENU
+CAPTION "Ogre Mesh/Animation/Material Exporter"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    EDITTEXT        IDC_TXT_EXPORT_DIR,65,7,364,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "Browse...",IDC_SELECT_EXPORT_DIR,436,7,50,14,
+                    WS_DISABLED
+    LTEXT           "For selections that include multiple mesh objects:",
+                    IDC_STATIC,12,36,234,8
+    CONTROL         "Export As Submeshes In Single File",
+                    IDC_RADIO_EXPORT_SUBMESHES,"Button",BS_AUTORADIOBUTTON | 
+                    WS_GROUP | WS_TABSTOP,18,48,228,10
+    CONTROL         "Export One Mesh Per File",IDC_RADIO_EXPORT_FILES,"Button",
+                    BS_AUTORADIOBUTTON | WS_TABSTOP,18,60,228,10
+    CONTROL         "One Skeleton Per Mesh",IDC_CHK_SHARE_SKELETON,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,30,72,216,10
+    CONTROL         "(Re)build normals before exporting",
+                    IDC_CHK_REBUILD_NORMALS,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,18,90,228,12
+    CONTROL         "Flip Y, Z",IDC_CHK_FLIP_YZ,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,18,102,228,10
+    CONTROL         "Invert Normals",IDC_CHK_INVERT_NORMALS,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,18,114,228,10
+    CONTROL         "Export Vertex Colors",IDC_CHK_VERTEX_COLORS,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,18,126,228,10
+    EDITTEXT        IDC_TXT_SCALE,42,138,40,12,ES_AUTOHSCROLL
+    LTEXT           "Interpret 2D Texture Coord:",IDC_STATIC,12,210,234,12
+    CONTROL         "UV",IDC_RADIO_UV,"Button",BS_AUTORADIOBUTTON | WS_GROUP | 
+                    WS_TABSTOP,24,222,25,10
+    CONTROL         "VW",IDC_RADIO_VW,"Button",BS_AUTORADIOBUTTON | 
+                    WS_TABSTOP,54,222,27,10
+    CONTROL         "WU",IDC_RADIO_WU,"Button",BS_AUTORADIOBUTTON | 
+                    WS_TABSTOP,84,222,27,10
+    EDITTEXT        IDC_TXT_MATERIAL_FILENAME,48,174,138,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_TXT_DEFAULT_MATERIAL,108,192,138,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "Export",IDC_EXPORT,381,252,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,436,252,50,14
+    GROUPBOX        "Mesh",IDC_STATIC,7,24,251,132
+    LTEXT           "Export Directory:",IDC_STATIC,7,7,56,8
+    GROUPBOX        "Material",IDC_STATIC,7,162,251,104
+    GROUPBOX        "Animation",IDC_STATIC,270,24,216,222
+    LTEXT           "Filename:",IDC_STATIC,12,174,36,8
+    LTEXT           "Scale:",IDC_STATIC,18,138,20,8
+    LTEXT           "Default Material Name:",IDC_STATIC,12,192,96,8
+    EDITTEXT        IDC_TXT_SKELETON_FILENAME,336,36,138,12,ES_AUTOHSCROLL
+    RTEXT           "Filename:",IDC_STATIC,276,36,54,8
+    CONTROL         "",IDC_LIST_ANIMATIONS,"SysListView32",LVS_REPORT | 
+                    LVS_EDITLABELS | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,
+                    336,66,138,108
+    RTEXT           "Animations:",IDC_STATIC,276,66,54,8
+    LTEXT           "FPS:",IDC_STATIC,276,84,54,12,NOT WS_VISIBLE
+    EDITTEXT        IDC_TXT_FPS,276,96,40,12,ES_AUTOHSCROLL | NOT WS_VISIBLE
+    EDITTEXT        IDC_TXT_ANIMATION_NAME,336,180,138,12,ES_AUTOHSCROLL
+    LTEXT           "Add Animation:",IDC_STATIC,276,180,54,12
+    LTEXT           "Start:",IDC_STATIC,276,198,30,12
+    EDITTEXT        IDC_TXT_ANIM_START,306,198,24,12,ES_AUTOHSCROLL
+    LTEXT           "End:",IDC_STATIC,342,198,24,12
+    EDITTEXT        IDC_TXT_ANIM_END,366,198,24,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "Add",IDC_CMD_ADD_ANIMATION,396,198,30,14
+    PUSHBUTTON      "Delete",IDC_CMD_DELETE_ANIMATION,432,198,42,14
+    LTEXT           "Frame Range:",IDC_STATIC,276,216,48,12
+    LTEXT           "",IDC_TXT_FRAME_RANGE,324,216,48,12
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

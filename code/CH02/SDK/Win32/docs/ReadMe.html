@@ -1,0 +1,409 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+
+  
+  <meta http-equiv="CONTENT-TYPE" content="text/html; charset=windows-1252">
+
+  
+  
+  <title>OGRE Readme</title>
+  <meta name="GENERATOR" content="OpenOffice.org 1.1.4  (Win32)">
+
+  
+  <meta name="CREATED" content="20050219;16153107">
+
+  
+  <meta name="CHANGED" content="20050219;17194093">
+
+  
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+
+<body bgcolor="#003300" dir="ltr" lang="en-US" link="#ffff00" text="#ccffcc">
+
+<p class="header" align="center">OGRE (Object-Oriented Graphics
+Rendering Engine)</p>
+
+<p class="header" align="center">SDK Distribution README file</p>
+
+<p class="header" align="center"><a href="http://www.ogre3d.org/">http://www.ogre3d.org</a></p>
+
+<p class="mainheader" align="left">Summary</p>
+
+<p>OGRE (Object-Oriented Graphics Rendering Engine) is a
+scene-oriented, flexible 3D engine written in C++ designed to make it
+easier and more intuitive for developers to produce games and demos
+utilising 3D hardware. The class library abstracts all the details of
+using the underlying system libraries like Direct3D and OpenGL and
+provides an interface based on world objects and other intuitive
+classes. </p>
+
+<p>This distribution contains the precompiled SDK release of OGRE
+and is the most convenient way of obtaining the engine. The full source
+code is also available, for people who want a little
+more flexibility or who are just curious as to the inner workings of
+the engine; go to the main OGRE web page for full details.<br>
+
+</p>
+
+<p class="mainheader" align="left">Index Of Contents</p>
+
+<p class="newsdate"><a href="ChangeLog.html">What's New?</a></p>
+
+<p>A summary of the new and altered features in this release.<br>
+
+</p>
+
+<p class="newsdate"><a href="http://www.ogre3d.org/wiki">The OGRE
+Wiki</a></p>
+
+<p>A gold mine of tutorials, tips and code snippets which will help
+you get up to speed with the engine. This is probably the best place to
+start learning OGRE. <br>
+
+</p>
+
+<p class="newsdate"><a href="manual/index.html">The OGRE Manual</a></p>
+
+<p>A descriptive reference to the major parts of the engine such as
+scripts. </p>
+
+<p class="newsdate"><a href="api/html/index.html">API Reference</a></p>
+
+<p class="maincontent">The full OGRE API documentation, as generated
+from the (heavily!) commented source.</p>
+
+<p class="mainheader" align="left">Compiling the Samples<br>
+
+</p>
+
+So, how do you go about compiling the samples? Firstly you need to set
+up your development environment. <br>
+
+<br>
+
+<span style="color: rgb(255, 255, 51);"><span style="color: rgb(51, 204, 0);">Are you using Visual C++ 6 or
+Visual C++.Net 2002?</span><br>
+
+</span>If so, you will need to use STLport, which is a
+standards-compliant version of the C++ Standard Template Library (STL);
+unfortunately versions of the STL which shipped with versions of Visual
+C++ before .Net 2003 are not standards compliant. The OGRE project
+provides a precompiled version of STLport which will work with VC6 and
+VC.Net 2002; go to the downloads area to get it and install it in the
+folder of your choice. After installing:<br>
+
+<ol>
+
+  <li>Load the Samples.dsw (VC6) or Samples.sln (VC7) file<br>
+
+  </li>
+
+  <li>Open Microsoft Visual C++ and select Tools | Options... from the
+menu bar to bring up the options dialog</li>
+
+  <li>Go to the include folders list: in VC6 this is on the
+'Directories' tab, in VC++.Net it is under Projects|VC++ Directories in
+the tree on the left</li>
+
+  <li>Insert the directory &lt;path_to_STLport-x.x.x&gt;\stlport is at
+the TOP of your include folders list. Crucially, it MUST be above all
+Microsoft include folders.</li>
+
+  <li>Insert the directory &lt;path_to_STLport-x.x.x&gt;\lib into your
+library folder list.</li>
+
+</ol>
+
+Once you have your development environment configured, just perform a
+Batch Build of the solution / workspace to build all the samples.<br>
+<br>
+<span style="color: rgb(51, 204, 0);">Are you using Code::Blocks + MinGW + STLPort?</span><br>
+If so, then you will need to follow the instructions in the <a href="http://www.ogre3d.org/wiki/index.php/CodeBlocks_MingW_STLPort" target="_blank">Ogre Wiki</a> for setting up Code::Blocks and MinGW prior to using the Ogre SDK.<br>
+
+<p class="mainheader" align="left">Keeping Up To Date</p>
+
+<p align="left">The best place to keep up to date with developments on
+OGRE is the <a href="http://www.ogre3d.org/">Official Web Site</a>.
+From there you can download the latest source code and documentation.
+You can choose between keeping bang up to date with CVS (Concurrent
+Versioning System) or by just getting the regularly released
+snapshots.</p>
+
+<p align="left">The changes included in this current version can be
+viewed on the <a href="ChangeLog.html">ChangeLog</a>. </p>
+
+<p class="mainheader" align="left">Getting Support</p>
+
+<p align="left">Please use our extensive forums if you need help or
+think you may have found a bug. Go to the <a href="http://ogre.sf.net/">main
+web site</a> and click on the Forums link.</p>
+
+<p class="mainheader" align="left">Licensing</p>
+
+<p>OGRE is distributed as free software under the GNU Lesser General
+Public License (see <a href="License.html">License.html</a>). In
+summary this means that you can use OGRE for any purpose, provided
+that if you make changes to OGRE itself, you must release the changes
+back into into the public domain under the LGPL and make it clear
+where you have made the changes. Your own application can be
+distributed under any license you like. Note that in the case of
+OGRE, inlining and macros in headers are used purely for performance
+or platform independence reasons, and including any of OGRE's headers
+in your projects does not result in a derived work. </p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Lesser General Public License for more details.</p>
+
+<p>You should have received a copy of the GNU Lesser General Public
+License along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+USA, or go to <a href="http://www.gnu.org/copyleft/lesser.txt">http://www.gnu.org/copyleft/lesser.txt</a>.</p>
+
+<p>In addition, if you use Ogre it would be nice if you displayed the
+Ogre logo somewhere in your application (start up or shutdown) for a
+minimum of 2 seconds. This splash-screen is displayed on the standard
+Ogre configuration dialog anyway, so if you use that you don't need
+to do anything extra. The logo is included in the download archive as
+Examples\Resources\ogrelogo.png.</p>
+
+<p>Some textures distrubuted with Ogre are used with permission of
+<a href="http://www.The3dStudio.com/">www.The3dStudio.com</a> and may
+not be re-distributed, sold, or given away except in the form of
+rendered images, animations, or real time 3D applications when credit
+is given to <a href="http://www.The3dStudio.com/">www.The3dStudio.com</a>.</p>
+
+<p>The 'Han Solo' TrueType font is &copy; 2000 by Iconian Fonts -
+Daniel Zadorozny. This font may be freely distributed and is free for
+all non-commercial uses. This font is e-mailware; that is, if you
+like it, please e-mail the author at: <a href="mailto:iconian@aol.com">iconian@aol.com</a>.</p>
+
+<p class="mainheader" align="left">Acknowledgements</p>
+
+<p>The authors wish to credit the following for their work which is
+used in whole or in part in OGRE:</p>
+
+<p>Artwork:</p>
+
+<ul>
+
+  <li>
+    
+    <p style="margin-bottom: 0cm;">Matt Anderson at <a href="http://www.The3dStudio.com/">www.The3dStudio.com</a> who kindly
+gave permission for the use of some textures</p>
+
+  </li>
+
+  <li>
+    
+    <p style="margin-bottom: 0cm;">Jonathan Clark at <a href="http://www.jonathanclark.com/">http://www.jonathanclark.com</a>
+for some Golgotha textures thet were released to the public domain.</p>
+
+  </li>
+
+  <li>
+    
+    <p style="margin-bottom: 0cm;">The 'Raptor Assault Gunboat' mesh
+&amp; texture are &copy; 2002 by Adrian 'cearny' Cearnau.</p>
+
+  </li>
+
+  <li>
+    
+    <p style="margin-bottom: 0cm;">The robot andn ninja mesh and
+animation are by <a href="http://www.psionic3d.co.uk/">Psionic</a>,
+kindly made available from the <a href="http://www.insanesoftware.de/">CharacterFX</a>
+site</p>
+
+  </li>
+
+  <li>
+    
+    <p style="margin-bottom: 0cm;">The 'Razor 2' mesh is by Dennis
+Verbeek</p>
+
+  </li>
+
+  <li>
+    
+    <p style="margin-bottom: 0cm;">Skyboxes in cubemapJS.zip are &copy;<a href="http://www.schlorb.com/">Johannes Schlorb</a>, used with
+permission. </p>
+
+  </li>
+
+  <li>
+    
+    <p>Grass texture is courtesy of Mathias 'freezer' Walch</p>
+
+  </li>
+
+</ul>
+
+<p>Included as source (modified as appropriate), and credited
+appropriately in the source files affected:</p>
+
+<ul>
+
+  <li>
+    
+    <p style="margin-bottom: 0cm;">Many of the maths/spatial routines
+are inspired by Dr D.H. Eberley, adapted from the 'free' parts of the
+Wild Magic engine 0.2 source provided with his book "3D Engine Design" (<a href="http://www.wild-magic.com/">http://www.wild-magic.com/</a>)</p>
+
+  </li>
+
+  <li>
+    
+    <p style="margin-bottom: 0cm;">Quake3 loading routines used a lot
+of information gleaned from <a href="http://www.planetquake.com/aftershock/">Aftershock</a> and <a href="http://strony.poland.com/bsekura/">Bart Sekura's ROGL</a></p>
+
+  </li>
+
+  <li>
+    
+    <p style="margin-bottom: 0cm;">Singleton template class is &copy; Scott
+Bilas 2000 from Game Programming Gems </p>
+
+  </li>
+
+  <li>
+    
+    <p>Memory manager is based on MMGR &copy; Paul Nettle at <a href="www.fluidstudios.com">Fluid Studios</a></p>
+
+  </li>
+
+</ul>
+
+<p>Source not modified, but linked in as part of the complete OGRE
+system:</p>
+
+<ul>
+
+  <li>
+    
+    <p style="margin-bottom: 0cm;">Compression is courtesy of the zlib
+compression library &copy; 1995-1998 Jean-loup Gailly and Mark Adler (<a href="http://www.gzip.org/zlib">http://www.gzip.org/zlib</a>)</p>
+
+  </li>
+
+  <li>
+    
+    <p style="margin-bottom: 0cm;">Default image codecs are provided by
+    <a href="http://openil.sourceforge.net/">DevIL</a>. </p>
+
+  </li>
+
+  <li>
+    
+    <p style="margin-bottom: 0cm;">ZIP archive support is provided by <a href="http://zziplib.sourceforge.net/">zziplib</a>.</p>
+
+  </li>
+
+  <li>
+    
+    <p style="margin-bottom: 0cm;">Interactive GUI support is by <a href="http://www.cegui.org.uk/">Crazy Eddies GUI</a>.</p>
+
+  </li>
+
+  <li>
+    
+    <p style="margin-bottom: 0cm;">SDL is &copy; (too many to list!) (<a href="http://www.libsdl.org/">http://www.libsdl.org</a>)</p>
+
+  </li>
+
+  <li>
+    
+    <p style="margin-bottom: 0cm;">Freetype2 is &copy; The Freetype Team (<a href="http://www.freetype.org/">http://www.freetype.org</a>)</p>
+
+  </li>
+
+  <li>
+    
+    <p>ODE is &copy; Russel Smith (<a href="http://q12.org/ode/">http://q12.org/ode/</a>)</p>
+
+  </li>
+
+</ul>
+
+<p>Standalone tools used:</p>
+
+<ul>
+
+  <li>
+    
+    <p style="margin-bottom: 0cm;">Document generation from C++ source
+code is by Doxygen &copy; Dimitri van Heesch (<a href="http://www.doxygen.org/">http://www.doxygen.org</a>)</p>
+
+  </li>
+
+  <li>
+    
+    <p>Milkshape3D for modelling &amp; exporting (<a href="http://www.milkshape3d.com/">http://www.milkshape3d.com</a>)</p>
+
+  </li>
+
+</ul>
+
+<p>And I'd also like to thank the following just for inspiration,
+ideas, and pretty much anything else:</p>
+
+<ul>
+
+  <li>
+    
+    <p style="margin-bottom: 0cm;">Scott Meyers for his superb
+'Effective C++' series</p>
+
+  </li>
+
+  <li>
+    
+    <p style="margin-bottom: 0cm;">Everybody who has ever written for
+Game Developer magazine, but particularly Chris Hecker and Jeff Lander
+whose work is consistently enlightening</p>
+
+  </li>
+
+  <li>
+    
+    <p style="margin-bottom: 0cm;">Michael Abrash for his 'Zen' books
+which inspired me to try graphics programming in the first place</p>
+
+  </li>
+
+  <li>
+    
+    <p style="margin-bottom: 0cm;">Everybody at SourceForge and VA
+Linux for providing <b>fantastic</b> facilities for developers with
+modest budgets</p>
+
+  </li>
+
+  <li>
+    
+    <p style="margin-bottom: 0cm;">Scott Adams (Dilbert) for providing
+a humourous distraction when I've had enough for the day</p>
+
+  </li>
+
+  <li>
+    
+    <p>My wife Marie for putting up with all this!</p>
+
+  </li>
+
+</ul>
+
+<p>Copyright &copy; 2005 by The OGRE Team
+<script>
+<!--//hide script from old browsers
+document.write( "Last modified "+ document.lastModified );
+//end hiding contents -->
+</script></p>
+
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {cancelClicked = id; okClicked = id; }; 
+            CLASS = OgreConfigWindowController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {messageTextField = id; optionsPopUp = id; }; 
+            SUPERCLASS = NSWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}

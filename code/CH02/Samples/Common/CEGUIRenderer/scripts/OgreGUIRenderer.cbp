@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="3" />
+	<Project>
+		<Option title="OgreGUIRenderer" />
+		<Option pch_mode="0" />
+		<Option default_target="-1" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="..\bin\Debug\OgreGUIRenderer_d.dll" />
+				<Option object_output="..\bin\Debug" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option includeInTargetAll="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-W" />
+					<Add option="-g" />
+					<Add option="-DWIN32" />
+					<Add option="-D_DEBUG" />
+					<Add option="-D_STLP_DEBUG" />
+					<Add option="-D_WINDOWS" />
+					<Add option="-D_USRDLL" />
+					<Add option="-DOGRE_GUIRENDERER_EXPORTS" />
+					<Add directory="..\include" />
+					<Add directory="..\..\..\..\OgreMain\include" />
+					<Add directory="..\..\..\..\Dependencies\include" />
+					<Add directory="..\..\..\..\Dependencies\include\CEGUI" />
+				</Compiler>
+				<Linker>
+					<Add library="CEGUIBase" />
+					<Add library="Ogremain_d" />
+					<Add library="xerces-c_2_6" />
+					<Add directory="..\..\..\..\OgreMain\lib\Debug" />
+					<Add directory="..\..\..\..\dependencies\lib\Debug" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="cp ..\bin\Debug\OgreGUIRenderer_d.dll ..\..\..\..\Samples\Common\bin\Debug" />
+				</ExtraCommands>
+			</Target>
+			<Target title="Release">
+				<Option output="..\bin\Release\OgreGUIRenderer.dll" />
+				<Option object_output="..\bin\Release" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option includeInTargetAll="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-O3" />
+					<Add option="-W" />
+					<Add option="-DWIN32" />
+					<Add option="-DNDEBUG" />
+					<Add option="-D_WINDOWS" />
+					<Add option="-D_USRDLL" />
+					<Add option="-DOGRE_GUIRENDERER_EXPORTS" />
+					<Add directory="..\include" />
+					<Add directory="..\..\..\..\OgreMain\include" />
+					<Add directory="..\..\..\..\Dependencies\include" />
+					<Add directory="..\..\..\..\Dependencies\include\CEGUI" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="CEGUIBase" />
+					<Add library="Ogremain" />
+					<Add library="xerces-c_2_6" />
+					<Add directory="..\..\..\..\OgreMain\lib\Release" />
+					<Add directory="..\..\..\..\dependencies\lib\Release" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="cp ..\bin\Release\OgreGUIRenderer.dll ..\..\bin\Release" />
+				</ExtraCommands>
+			</Target>
+		</Build>
+		<Linker>
+			<Add option="-Wl,--enable-runtime-pseudo-reloc" />
+		</Linker>
+		<Unit filename="..\include\OgreCEGUIRenderer.h">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\include\OgreCEGUIResourceProvider.h">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\include\OgreCEGUITexture.h">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\src\OgreCEGUIRenderer.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\src\OgreCEGUIResourceProvider.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\src\OgreCEGUITexture.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

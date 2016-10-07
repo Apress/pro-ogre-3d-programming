@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_workspace_file>
+	<Workspace title="Ogre workspace">
+		<Project filename="OgreMain\scripts\OgreMain.cbp" />
+		<Project filename="PlatformManagers\Win32\scripts\PlatformManager_Win32.cbp" />
+		<Project filename="PlugIns\BSPSceneManager\scripts\Plugin_BSPSceneManager.cbp" />
+		<Project filename="PlugIns\CgProgramManager\scripts\Plugin_CgProgramManager.cbp" />
+		<Project filename="PlugIns\OctreeSceneManager\scripts\Plugin_OctreeSceneManager.cbp" />
+		<Project filename="PlugIns\ParticleFX\scripts\Plugin_ParticleFX.cbp" />
+		<Project filename="ReferenceApplication\ReferenceAppLayer\scripts\ReferenceAppLayer.cbp" />
+		<Project filename="RenderSystems\Direct3D9\scripts\RenderSystem_Direct3D9.cbp" />
+		<Project filename="RenderSystems\GL\scripts\RenderSystem_GL.cbp" />
+		<Project filename="Samples\Common\CEGUIRenderer\scripts\OgreGUIRenderer.cbp" />
+		<Project filename="Tools\MaterialUpgrader\scripts\MaterialUpgrader.cbp" />
+		<Project filename="Tools\MeshUpgrader\scripts\MeshUpgrader.cbp" />
+		<Project filename="Tools\XMLConverter\scripts\XMLConverter.cbp" />
+		<Project filename="Samples\BezierPatch\scripts\Demo_BezierPatch.cbp" active="1" />
+		<Project filename="Samples\BSP\scripts\Demo_BSP.cbp" />
+		<Project filename="ReferenceApplication\BspCollision\scripts\BspCollision.cbp" />
+		<Project filename="Samples\CameraTrack\scripts\Demo_CameraTrack.cbp" />
+		<Project filename="Samples\CelShading\scripts\Demo_CelShading.cbp" />
+		<Project filename="Samples\Compositor\scripts\Demo_Compositor.cbp" />
+		<Project filename="Samples\CubeMapping\scripts\Demo_CubeMapping.cbp" />
+		<Project filename="Samples\DeferredShading\scripts\Demo_DeferredShading.cbp" />
+		<Project filename="Samples\Dot3Bump\scripts\Demo_Dot3Bump.cbp" />
+		<Project filename="Samples\DynTex\scripts\Demo_DynTex.cbp" />
+		<Project filename="Samples\EnvMapping\scripts\Demo_EnvMapping.cbp" />
+		<Project filename="Samples\FacialAnimation\scripts\Demo_FacialAnimation.cbp" />
+		<Project filename="Samples\Fresnel\scripts\Demo_Fresnel.cbp" />
+		<Project filename="Samples\Grass\scripts\Demo_Grass.cbp" />
+		<Project filename="Samples\Gui\scripts\Demo_Gui.cbp" />
+		<Project filename="Samples\Lighting\scripts\Demo_Lighting.cbp" />
+		<Project filename="Samples\ParticleFX\scripts\Demo_ParticleFX.cbp" />
+		<Project filename="Samples\RenderToTexture\scripts\Demo_RenderToTexture.cbp" />
+		<Project filename="Samples\SkeletalAnimation\scripts\Demo_SkeletalAnimation.cbp" />
+		<Project filename="Samples\SkyBox\scripts\Demo_SkyBox.cbp" />
+		<Project filename="Samples\SkyDome\scripts\Demo_SkyDome.cbp" />
+		<Project filename="Samples\SkyPlane\scripts\Demo_SkyPlane.cbp" />
+		<Project filename="Samples\Smoke\scripts\Demo_Smoke.cbp" />
+		<Project filename="Samples\Terrain\scripts\Demo_Terrain.cbp" />
+		<Project filename="Samples\TextureFX\scripts\Demo_TextureFX.cbp" />
+		<Project filename="Samples\Transpacency\scripts\Demo_Transparency.cbp" />
+		<Project filename="Samples\Water\scripts\Demo_Water.cbp" />
+		<Project filename="Samples\Shadows\scripts\Demo_Shadows.cbp" />
+		<Project filename="Samples\VolumeTex\scripts\Demo_VolumeTex.cbp" />
+	</Workspace>
+</CodeBlocks_workspace_file>

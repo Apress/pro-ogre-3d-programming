@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="3" />
+	<Project>
+		<Option title="Demo_BspCollision" />
+		<Option pch_mode="0" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="..\..\..\Samples\Common\bin\Debug\Demo_BspCollision.exe" />
+				<Option working_dir="..\..\..\Samples\Common\bin\Debug" />
+				<Option object_output="..\obj\Debug" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option includeInTargetAll="1" />
+				<Option projectResourceIncludeDirsRelation="1" />
+				<Compiler>
+					<Add option="-W" />
+					<Add option="-g" />
+					<Add option="-DWIN32" />
+					<Add option="-D_DEBUG" />
+					<Add option="-D_WINDOWS" />
+					<Add directory="..\include" />
+					<Add directory="..\..\Common\include" />
+					<Add directory="..\..\..\OgreMain\include" />
+					<Add directory="..\..\..\Dependencies\include" />
+					<Add directory="..\..\ReferenceAppLayer\include" />
+				</Compiler>
+				<Linker>
+					<Add library="OgreMain_d" />
+					<Add library="ReferenceAppLayer" />
+					<Add directory="..\..\..\OgreMain\lib\Debug" />
+					<Add directory="..\..\Dependencies\lib\Debug" />
+					<Add directory="..\..\ReferenceAppLayer\lib\Debug" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="..\..\..\Samples\Common\bin\Release\Demo_BspCollision.exe" />
+				<Option working_dir="..\..\..\Samples\Common\bin\Release" />
+				<Option object_output="..\obj\Release" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option includeInTargetAll="1" />
+				<Option projectResourceIncludeDirsRelation="1" />
+				<Compiler>
+					<Add option="-O3" />
+					<Add option="-W" />
+					<Add option="-DWIN32" />
+					<Add option="-DNDEBUG" />
+					<Add option="-D_WINDOWS" />
+					<Add directory="..\include" />
+					<Add directory="..\..\Common\include" />
+					<Add directory="..\..\..\OgreMain\include" />
+					<Add directory="..\..\..\Dependencies\include" />
+					<Add directory="..\..\ReferenceAppLayer\include" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="OgreMain" />
+					<Add library="ReferenceAppLayer" />
+					<Add directory="..\..\..\OgreMain\lib\Release" />
+					<Add directory="..\..\Dependencies\lib\Release" />
+					<Add directory="..\..\ReferenceAppLayer\lib\Release" />
+				</Linker>
+			</Target>
+		</Build>
+		<Linker>
+			<Add option="-Wl,--enable-runtime-pseudo-reloc" />
+		</Linker>
+		<Unit filename="..\..\Common\include\ExampleRefAppApplication.h">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\..\Common\include\ExampleRefAppFrameListener.h">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="..\src\BspCollision.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

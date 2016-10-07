@@ -1,0 +1,12 @@
+LIBRARY PlatformManager_Win32
+EXPORTS
+	createPlatformConfigDialog
+	createPlatformErrorDialog
+	createPlatformInputReader
+	createTimer
+	destroyPlatformRenderWindow
+	destroyPlatformConfigDialog
+	destroyPlatformErrorDialog
+	destroyPlatformInputReader
+	destroyTimer
+	messagePump
